@@ -1,4 +1,4 @@
-.PHONY: new daily test cover lint fmt vet tidy
+.PHONY: new daily test cover bench lint fmt vet tidy hooks
 
 # make new S=two-sum  (N/T/D — фолбэк, если leetcode недоступен)
 new:
@@ -17,12 +17,17 @@ bench:
 	go test -bench=. -benchmem ./...
 
 fmt:
-	gofmt -l -w .
+	golangci-lint fmt
 
 vet:
 	go vet ./...
 
-lint: fmt vet
+lint:
+	golangci-lint run
+
+hooks:
+	pre-commit install
+	pre-commit run --all-files
 
 tidy:
 	go mod tidy

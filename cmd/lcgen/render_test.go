@@ -148,7 +148,7 @@ func TestRenderTestFallsBackToStub(t *testing.T) {
 }
 
 func TestRenderSolutionUnfoldsNodeDefinition(t *testing.T) {
-	snippet := `/**
+	q := questionWithSnippet("104", "Maximum Depth of Binary Tree", `/**
  * Definition for a binary tree node.
  * type TreeNode struct {
  *     Val int
@@ -158,11 +158,12 @@ func TestRenderSolutionUnfoldsNodeDefinition(t *testing.T) {
  */
 func maxDepth(root *TreeNode) int {
 
-}`
+}`)
 
-	got := renderSolution("maximumdepth", snippet)
+	got := renderSolution(q, "maximumdepth")
 
 	for _, want := range []string{
+		"// Package maximumdepth — решение leetcode 104. Maximum Depth of Binary Tree.",
 		"package maximumdepth",
 		"type TreeNode struct {",
 		"Left  *TreeNode",
@@ -175,6 +176,49 @@ func maxDepth(root *TreeNode) int {
 	}
 	if strings.Contains(got, "Definition for a binary tree node") {
 		t.Errorf("комментарий-определение должен был превратиться в код:\n%s", got)
+	}
+}
+
+func TestRenderSolutionDiscardsStubParams(t *testing.T) {
+	tests := []struct {
+		name    string
+		snippet string
+		want    string
+	}{
+		{
+			name:    "named params",
+			snippet: "func twoSum(nums []int, target int) []int {\n\n}",
+			want:    "\t_, _ = nums, target\n\tpanic(\"not implemented\")",
+		},
+		{
+			name:    "grouped params share a type",
+			snippet: "func gcd(a, b int) int {\n\n}",
+			want:    "\t_, _ = a, b\n\tpanic(\"not implemented\")",
+		},
+		{
+			name:    "method on a design-problem receiver",
+			snippet: "func (this *MyStack) Push(x int) {\n\n}",
+			want:    "\t_ = x\n\tpanic(\"not implemented\")",
+		},
+		{
+			name:    "no params",
+			snippet: "func Constructor() MyStack {\n\n}",
+			want:    "MyStack {\n\tpanic(\"not implemented\")",
+		},
+		{
+			name:    "blank param needs no discard",
+			snippet: "func solve(_ int) int {\n\n}",
+			want:    "int {\n\tpanic(\"not implemented\")",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := renderSolution(questionWithSnippet("1", "Some Problem", tt.snippet), "pkg")
+			if !strings.Contains(got, tt.want) {
+				t.Errorf("solution.go не содержит %q:\n%s", tt.want, got)
+			}
+		})
 	}
 }
 
@@ -210,6 +254,15 @@ func TestRenderReadmeCollectsMetadata(t *testing.T) {
 			t.Errorf("README не содержит %q:\n%s", want, got)
 		}
 	}
+}
+
+func questionWithSnippet(id, title, snippet string) Question {
+	q := Question{FrontendID: id, Title: title}
+	q.CodeSnippets = append(q.CodeSnippets, struct {
+		LangSlug string `json:"langSlug"`
+		Code     string `json:"code"`
+	}{LangSlug: "golang", Code: snippet})
+	return q
 }
 
 func unmarshalMeta(t *testing.T, raw string) Meta {

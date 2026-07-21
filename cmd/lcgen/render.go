@@ -61,10 +61,11 @@ func renderReadme(q Question, statement string) string {
 	return b.String()
 }
 
-func renderSolution(pkg, snippet string) string {
-	defs, code := splitSnippet(snippet)
+func renderSolution(q Question, pkg string) string {
+	defs, code := splitSnippet(q.goSnippet())
 
 	var b strings.Builder
+	fmt.Fprintf(&b, "// Package %s — решение leetcode %s. %s.\n", pkg, q.FrontendID, q.Title)
 	fmt.Fprintf(&b, "package %s\n\n", pkg)
 	for _, def := range defs {
 		b.WriteString(def + "\n\n")
@@ -141,12 +142,97 @@ func fillBodies(code string) string {
 			j++
 		}
 		if j < len(lines) && strings.TrimSpace(lines[j]) == "}" {
+			if names := paramNames(lines[i]); len(names) > 0 {
+				blanks := strings.TrimSuffix(strings.Repeat("_, ", len(names)), ", ")
+				out = append(out, fmt.Sprintf("\t%s = %s", blanks, strings.Join(names, ", ")))
+			}
 			out = append(out, "\tpanic(\"not implemented\")", "}")
 			i = j
 		}
 	}
 
 	return strings.Join(out, "\n")
+}
+
+// paramNames достаёт имена параметров из строки сигнатуры, чтобы заглушка могла
+// их «использовать»: пока задача не решена, они иначе висят неиспользованными.
+func paramNames(signature string) []string {
+	params := paramList(signature)
+	if params == "" {
+		return nil
+	}
+
+	groups := splitTopLevel(params)
+	named := false
+	for _, g := range groups {
+		if len(strings.Fields(g)) > 1 {
+			named = true
+			break
+		}
+	}
+	// Смешивать именованные и анонимные параметры Go не даёт, так что либо
+	// имена есть у всех, либо сигнатура из одних типов — и брать нечего.
+	if !named {
+		return nil
+	}
+
+	var names []string
+	for _, g := range groups {
+		if name := strings.Fields(g)[0]; name != "_" {
+			names = append(names, name)
+		}
+	}
+	return names
+}
+
+func paramList(signature string) string {
+	rest := strings.TrimPrefix(signature, "func ")
+	if strings.HasPrefix(rest, "(") {
+		rest = rest[matchingParen(rest)+1:] // пропускаем получателя метода
+	}
+
+	open := strings.Index(rest, "(")
+	if open < 0 {
+		return ""
+	}
+	rest = rest[open:]
+	return strings.TrimSpace(rest[1:matchingParen(rest)])
+}
+
+func matchingParen(s string) int {
+	depth := 0
+	for i, r := range s {
+		switch r {
+		case '(':
+			depth++
+		case ')':
+			if depth--; depth == 0 {
+				return i
+			}
+		}
+	}
+	return len(s) - 1
+}
+
+func splitTopLevel(params string) []string {
+	var groups []string
+	depth, start := 0, 0
+
+	for i, r := range params {
+		switch r {
+		case '(', '[', '{':
+			depth++
+		case ')', ']', '}':
+			depth--
+		case ',':
+			if depth == 0 {
+				groups = append(groups, strings.TrimSpace(params[start:i]))
+				start = i + 1
+			}
+		}
+	}
+
+	return append(groups, strings.TrimSpace(params[start:]))
 }
 
 func renderTest(pkg string, meta Meta, examples string, outputs []string) string {

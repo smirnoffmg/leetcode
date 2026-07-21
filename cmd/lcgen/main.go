@@ -1,3 +1,4 @@
+// Package main — lcgen: генератор каталога задачи по её слагу на leetcode.
 package main
 
 import (
@@ -94,7 +95,7 @@ func scaffold(q Question, root string, force bool) (dir, status string, err erro
 	statement := htmlToMarkdown(q.Content)
 	files := map[string]string{
 		"README.md":        renderReadme(q, statement),
-		"solution.go":      renderSolution(pkg, q.goSnippet()),
+		"solution.go":      renderSolution(q, pkg),
 		"solution_test.go": renderTest(pkg, q.meta(), q.ExampleTestcases, expectedOutputs(statement)),
 	}
 

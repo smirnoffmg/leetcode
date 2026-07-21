@@ -1,0 +1,17 @@
+# Test binaries and coverage
+*.test
+*.out
+coverage.html
+
+# Build artifacts
+/bin/
+
+# Editors
+.idea/
+.vscode/
+*.swp
+
+.claude
+
+# macOS
+.DS_Store

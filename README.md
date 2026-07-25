@@ -15,6 +15,7 @@
 make new S=two-sum   # заготовка по слагу задачи
 make daily           # заготовка по задаче дня
 make test            # прогнать все решения
+make push            # закоммитить и запушить работу за день
 ```
 
 Слаг — это часть URL задачи: `https://leetcode.com/problems/two-sum/` → `two-sum`.
@@ -75,6 +76,7 @@ make new S=two-sum N=1 T="Two Sum" D=easy
 | `make bench`                                           | бенчмарки с аллокациями               |
 | `make fmt` / `make vet` / `make lint`                  | форматирование и статические проверки |
 | `make tidy`                                            | `go mod tidy`                         |
+| `make push [M="<текст>"]`                              | закоммитить и запушить работу за день |
 
 ## Структура репозитория
 

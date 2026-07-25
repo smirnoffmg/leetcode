@@ -47,4 +47,4 @@ push:
 		if [ -n "$$slugs" ]; then msg="solve($$day): $$slugs"; \
 		else msg="chore($$day): update"; fi; \
 	fi; \
-	git commit -m "$$msg" && git push
+	git commit -m "$$msg" && git pull --rebase && git push

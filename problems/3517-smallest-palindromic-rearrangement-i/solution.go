@@ -9,7 +9,7 @@ func smallestPalindrome(s string) string {
 	res := []byte(s)
 	slices.Sort(res[:partition])
 
-	for i := 0; i < partition; i++ {
+	for i := range partition {
 		res[len(s)-1-i] = res[i]
 	}
 

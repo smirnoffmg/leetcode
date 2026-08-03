@@ -65,12 +65,60 @@ make new S=two-sum N=1 T="Two Sum" D=easy
 
 Для `make daily` фолбэка нет: без ответа API задача дня неизвестна.
 
+## Отправка решения
+
+`lcsubmit` отправляет `solution.go` на leetcode и ждёт вердикт:
+
+```bash
+make submit            # задача, в которой solution.go правился последним
+make submit S=two-sum  # конкретная задача
+```
+
+```
+problem:    877. Stone Game
+submission: https://leetcode.com/submissions/detail/1234567890/
+verdict:    Accepted (46/46 тестов)
+runtime:    0 ms (быстрее 100.00% решений)
+memory:     2.1 MB (экономнее 88.24% решений)
+```
+
+Если решение не принято, печатаются ошибка компиляции, паника или проваленный тест
+с ожидаемым и полученным выводом; код выхода — 1.
+
+Перед отправкой из файла срезаются `package`-строка с doc-комментарием и объявления
+`ListNode`/`TreeNode`/`Node` — leetcode объявляет их сам, дубль ломает компиляцию.
+Заготовка с `panic("not implemented")` не отправляется. Посмотреть, что именно уйдёт:
+
+```bash
+go run ./cmd/lcsubmit -slug two-sum -dry-run
+```
+
+### Куки
+
+Нужны две переменные — cookies залогиненного leetcode.com
+(DevTools → Application → Cookies, или `chrome://settings/cookies/detail?site=leetcode.com`).
+`make submit` подхватывает их из `.env` в корне репозитория:
+
+```bash
+LEETCODE_SESSION=...   # cookie LEETCODE_SESSION
+LEETCODE_CSRF=...      # cookie csrftoken
+```
+
+`.env` в `.gitignore` — под гит он попасть не должен, `make push` делает `git add -A`.
+Если запускаешь `lcsubmit` напрямую, эти же значения нужны в окружении (`export`, `direnv`).
+
+Куки живут около недели, потом `lcsubmit` попросит их обновить. Автологина по паролю
+у leetcode нет — там капча.
+
+Прочие флаги: `-lang` (по умолчанию `golang`), `-timeout` (сколько ждать вердикт, по умолчанию минута).
+
 ## Команды make
 
 | Команда                                                | Что делает                            |
 | ------------------------------------------------------ | ------------------------------------- |
 | `make new S=<slug> [N=<num> T=<title> D=<difficulty>]` | заготовка по слагу                    |
 | `make daily`                                           | заготовка по задаче дня               |
+| `make submit [S=<slug>]`                               | отправить решение на leetcode         |
 | `make test`                                            | `go test ./...`                       |
 | `make cover`                                           | тесты с покрытием                     |
 | `make bench`                                           | бенчмарки с аллокациями               |
@@ -82,6 +130,7 @@ make new S=two-sum N=1 T="Two Sum" D=easy
 
 ```
 cmd/lcgen/     генератор: клиент GraphQL, html→markdown, рендер файлов, маппинг типов
+cmd/lcsubmit/  отправка решения: подготовка кода, submit и поллинг вердикта
 scripts/       обёртки new.sh и daily.sh, которые make дёргает
 problems/      сгенерированные задачи, по одному пакету на задачу
 ```

@@ -6,6 +6,9 @@ coverage.html
 # Build artifacts
 /bin/
 
+# Куки leetcode для lcsubmit
+.env
+
 # Editors
 .idea/
 .vscode/

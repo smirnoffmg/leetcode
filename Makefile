@@ -1,4 +1,8 @@
-.PHONY: new daily test cover bench lint fmt vet tidy hooks push
+.PHONY: new daily submit test cover bench lint fmt vet tidy hooks push
+
+# Куки leetcode, если лежат в .env (файл не под гитом)
+-include .env
+export LEETCODE_SESSION LEETCODE_CSRF
 
 # make new S=two-sum  (N/T/D — фолбэк, если leetcode недоступен)
 new:
@@ -6,6 +10,12 @@ new:
 
 daily:
 	@./scripts/daily.sh
+
+# make submit            → отправить задачу, которую правил последней
+# make submit S=two-sum  → отправить конкретную
+# нужны LEETCODE_SESSION и LEETCODE_CSRF из cookies браузера
+submit:
+	@go run ./cmd/lcsubmit -slug "$(S)"
 
 test:
 	go test ./...

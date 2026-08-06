@@ -41,7 +41,7 @@ Output: 12
 
 <details><summary>Hint 1</summary>
 
-Use brute force: two loops to select i and j, then select the maximum value of (nums[i]-1)*(nums[j]-1).
+Use brute force: two loops to select i and j, then select the maximum value of (nums[i]-1)\*(nums[j]-1).
 
 </details>
 

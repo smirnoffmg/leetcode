@@ -17,7 +17,7 @@ Alice and Bob take turns, with **Alice starting first**. Each turn, a player tak
 the **beginning** or from the **end** of the row. This continues until there are no more piles left, at which point the person
 with the **most stones wins**.
 
-Assuming Alice and Bob play optimally, return `true`_ if Alice wins the game, or_ `false`_ if Bob wins_.
+Assuming Alice and Bob play optimally, return `true`\_ if Alice wins the game, or\_ `false`\_ if Bob wins\_.
 
 **Example 1:**
 

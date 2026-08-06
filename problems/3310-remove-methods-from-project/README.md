@@ -22,7 +22,7 @@ answer in _any order_. If it is not possible to remove **all** the suspicious me
 
 **Example 1:**
 
-**Input:** n = 4, k = 1, invocations = [[1,2],[0,1],[3,2]]
+**Input:** n = 4, k = 1, invocations = \[[1,2],[0,1],[3,2]\]
 
 **Output:** [0,1,2,3]
 
@@ -32,7 +32,7 @@ Method 2 and method 1 are suspicious, but they are directly invoked by methods 3
 
 **Example 2:**
 
-**Input:** n = 5, k = 0, invocations = [[1,2],[0,2],[0,1],[3,4]]
+**Input:** n = 5, k = 0, invocations = \[[1,2],[0,2],[0,1],[3,4]\]
 
 **Output:** [3,4]
 
@@ -42,7 +42,7 @@ Methods 0, 1, and 2 are suspicious and they are not directly invoked by any othe
 
 **Example 3:**
 
-**Input:** n = 3, k = 2, invocations = [[1,2],[0,1],[2,0]]
+**Input:** n = 3, k = 2, invocations = \[[1,2],[0,1],[2,0]\]
 
 **Output:** []
 
@@ -87,9 +87,9 @@ Mark all the nodes visited from node `k`, and then check if they can be visited 
 ### Алгоритм
 
 1. Список смежности по исходящим рёбрам.
-2. Обход от `k`, отмечающий `suspicious[v]` — это `S`.
-3. Один проход по `invocations`: если нашлось ребро `a → b` с `!suspicious[a] && suspicious[b]`, группу удалять нельзя — обнуляем `suspicious`.
-4. Ответ — вершины с `!suspicious[i]`.
+1. Обход от `k`, отмечающий `suspicious[v]` — это `S`.
+1. Один проход по `invocations`: если нашлось ребро `a → b` с `!suspicious[a] && suspicious[b]`, группу удалять нельзя — обнуляем `suspicious`.
+1. Ответ — вершины с `!suspicious[i]`.
 
 Второй обход графа на шаге 3 не нужен: условие проверяется локально на каждом ребре, а `suspicious` к этому моменту уже посчитан полностью.
 
@@ -106,8 +106,8 @@ Mark all the nodes visited from node `k`, and then check if they can be visited 
 Строится в три прохода без временного массива курсоров:
 
 1. `starts[a+1]++` по каждому ребру — исходящие степени со сдвигом на единицу;
-2. префиксные суммы `starts[v+1] += starts[v]` — границы блоков;
-3. раскладка рёбер, где `starts[a]` служит курсором и постинкрементится.
+1. префиксные суммы `starts[v+1] += starts[v]` — границы блоков;
+1. раскладка рёбер, где `starts[a]` служит курсором и постинкрементится.
 
 После шага 3 каждый `starts[v]` продвинулся ровно на длину своего блока, то есть стал прежним `starts[v+1]`; сдвиг массива вправо на одну позицию возвращает начала блоков на место.
 

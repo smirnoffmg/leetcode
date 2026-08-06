@@ -17,7 +17,7 @@ The objective of the game is to end with the highest score, and the winner is th
 
 Assume Alice and Bob **play optimally**.
 
-Return `"Alice"`_ if Alice will win,_ `"Bob"`_ if Bob will win, or_ `"Tie"`_ if they will end the game with the same score_.
+Return `"Alice"`\_ if Alice will win,\_ `"Bob"`\_ if Bob will win, or\_ `"Tie"`\_ if they will end the game with the same score\_.
 
 **Example 1:**
 
@@ -118,13 +118,13 @@ f(i) = max( (stoneValue[i] + … + stoneValue[i+k−1]) − f(i+k) ),  k = 1..3,
 
 `stoneValue = [1,2,3,7]`:
 
-| суффикс     | вычисление                  | `f`    |
-| ----------- | --------------------------- | ------ |
-| `[]`        | база                        | 0      |
-| `[7]`       | `7−0`                       | 7      |
-| `[3,7]`     | `max(3−7, 10−0)`            | 10     |
-| `[2,3,7]`   | `max(2−10, 5−7, 12−0)`      | 12     |
-| `[1,2,3,7]` | `max(1−12, 3−10, 6−7)`      | **−1** |
+| суффикс     | вычисление             | `f`    |
+| ----------- | ---------------------- | ------ |
+| `[]`        | база                   | 0      |
+| `[7]`       | `7−0`                  | 7      |
+| `[3,7]`     | `max(3−7, 10−0)`       | 10     |
+| `[2,3,7]`   | `max(2−10, 5−7, 12−0)` | 12     |
+| `[1,2,3,7]` | `max(1−12, 3−10, 6−7)` | **−1** |
 
 `−1 < 0` → `"Bob"`. Сумма всех камней `13`, значит счёт `6:7` — что согласуется с разбором в условии. Последняя строка показывает механику выбора: все три хода Алисы проигрышны, она лишь минимизирует отставание, забирая `1+2+3`.
 

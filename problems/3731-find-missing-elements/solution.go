@@ -23,9 +23,7 @@ func findMissingElements(nums []int) []int {
 		if !seen[i] {
 			res = append(res, i)
 		}
-
 	}
 
 	return res
-
 }

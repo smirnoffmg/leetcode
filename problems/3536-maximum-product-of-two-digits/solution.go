@@ -2,23 +2,17 @@
 package maximumproductoftwodigits
 
 func maxProduct(n int) int {
-	var a, b, next int
+	var a, b int
 
-	for {
-		next = n % 10
+	for ; n > 0; n /= 10 {
+		d := n % 10
 
-		if next > a {
-			a, b = next, a
-		} else if next > b {
-			b = next
-		}
-
-		n -= next
-		n /= 10
-
-		if n == 0 {
-			break
+		if d > a {
+			a, b = d, a
+		} else if d > b {
+			b = d
 		}
 	}
+
 	return a * b
 }

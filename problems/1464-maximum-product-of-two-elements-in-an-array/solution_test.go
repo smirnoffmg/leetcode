@@ -1,6 +1,7 @@
 package maximumproductoftwoelementsinanarray
 
 import (
+	"math/rand/v2"
 	"testing"
 )
 
@@ -22,5 +23,20 @@ func TestMaxProduct(t *testing.T) {
 				t.Errorf("maxProduct(%v) = %v, want %v", tt.nums, got, tt.want)
 			}
 		})
+	}
+}
+
+func BenchmarkMaxProduct(b *testing.B) {
+	rng := rand.New(rand.NewPCG(1464, 1))
+
+	nums := make([]int, 500)
+	for i := range nums {
+		nums[i] = 1 + rng.IntN(1000)
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		maxProduct(nums)
 	}
 }

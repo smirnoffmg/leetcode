@@ -98,3 +98,18 @@ func play(nums []int, i, j int) (mover, opponent int) {
 
 	return takeRight, rightMover
 }
+
+func BenchmarkPredictTheWinner(b *testing.B) {
+	rng := rand.New(rand.NewPCG(486, 1))
+
+	nums := make([]int, 20)
+	for i := range nums {
+		nums[i] = rng.IntN(10_000_001)
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		predictTheWinner(nums)
+	}
+}

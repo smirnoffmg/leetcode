@@ -126,3 +126,18 @@ func play(stoneValue []int, i int) (mover, opponent int) {
 
 	return mover, opponent
 }
+
+func BenchmarkStoneGameIII(b *testing.B) {
+	rng := rand.New(rand.NewPCG(1406, 1))
+
+	stoneValue := make([]int, 50_000)
+	for i := range stoneValue {
+		stoneValue[i] = rng.IntN(2001) - 1000
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		stoneGameIII(stoneValue)
+	}
+}

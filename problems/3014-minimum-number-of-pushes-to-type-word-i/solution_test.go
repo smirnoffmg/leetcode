@@ -23,3 +23,9 @@ func TestMinimumPushes(t *testing.T) {
 		})
 	}
 }
+
+func BenchmarkMinimumPushes(b *testing.B) {
+	for b.Loop() {
+		minimumPushes("abcdefghijklmnopqrstuvwxyz")
+	}
+}

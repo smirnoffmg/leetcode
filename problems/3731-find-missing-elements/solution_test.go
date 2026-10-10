@@ -1,6 +1,7 @@
 package findmissingelements
 
 import (
+	"math/rand/v2"
 	"reflect"
 	"testing"
 )
@@ -23,5 +24,22 @@ func TestFindMissingElements(t *testing.T) {
 				t.Errorf("findMissingElements(%v) = %v, want %v", tt.nums, got, tt.want)
 			}
 		})
+	}
+}
+
+// Крайние значения 1 и 100 присутствуют всегда, поэтому просматривается весь диапазон;
+// остальные — различные значения из 2..99, как требует условие.
+func BenchmarkFindMissingElements(b *testing.B) {
+	rng := rand.New(rand.NewPCG(3731, 1))
+
+	nums := []int{1, 100}
+	for _, v := range rng.Perm(98)[:48] {
+		nums = append(nums, v+2)
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		findMissingElements(nums)
 	}
 }

@@ -13,5 +13,4 @@ func maxProduct(nums []int) int {
 	}
 
 	return (a - 1) * (b - 1)
-
 }

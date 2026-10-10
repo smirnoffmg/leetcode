@@ -26,3 +26,20 @@ func TestTwoSum(t *testing.T) {
 		})
 	}
 }
+
+// Худший случай: пара — два последних элемента, поэтому в таблицу успевает
+// попасть весь массив. Значения подряд дают единственную пару с суммой 2n−3.
+func BenchmarkTwoSum(b *testing.B) {
+	const n = 10_000
+
+	nums := make([]int, n)
+	for i := range nums {
+		nums[i] = i
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		twoSum(nums, 2*n-3)
+	}
+}

@@ -1,12 +1,31 @@
 // Package maximumproductofthreenumbers — решение leetcode 628. Maximum Product of Three Numbers.
 package maximumproductofthreenumbers
 
-import "slices"
+import "math"
 
+// Кандидатов в ответ ровно два, и оба собираются из пяти крайних значений:
+// три наибольших или два наименьших (отрицательных) с наибольшим.
 func maximumProduct(nums []int) int {
-	n := len(nums)
+	hi1, hi2, hi3 := math.MinInt, math.MinInt, math.MinInt
+	lo1, lo2 := math.MaxInt, math.MaxInt
 
-	slices.Sort(nums)
+	for _, v := range nums {
+		switch {
+		case v >= hi1:
+			hi1, hi2, hi3 = v, hi1, hi2
+		case v >= hi2:
+			hi2, hi3 = v, hi2
+		case v > hi3:
+			hi3 = v
+		}
 
-	return max(nums[0]*nums[1]*nums[n-1], nums[n-3]*nums[n-2]*nums[n-1])
+		switch {
+		case v <= lo1:
+			lo1, lo2 = v, lo1
+		case v < lo2:
+			lo2 = v
+		}
+	}
+
+	return max(lo1*lo2*hi1, hi1*hi2*hi3)
 }
